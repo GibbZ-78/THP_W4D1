@@ -39,17 +39,17 @@ def input_user
   return usr_tmp
 end
 
-# add_attendee - Cycle through the USER list and propose to add each of them to the current EVENT
+# add_attendees - Cycle through the USER list and propose to add each of them to the current EVENT
 def add_attendees(current_event)
   compteur = 0
-  User.get_all_users.each do |subscriber|
+  User.get_all.each do |subscriber|
     print "Do you want to invite #{subscriber.firstname} #{subscriber.lastname} (#{subscriber.email}) to this new event (Y/N)? "
     if gets.chomp.upcase == "Y"
       current_event.add_1_attendee(subscriber)
       compteur += 1
     end
-    puts "Thank you: #{compteur} user(s) have been invited to the upcoming #{current_event.title} event"
   end
+  puts "Thank you: #{compteur} user(s) have been invited to the upcoming #{current_event.title} event"
 end
 
 # input_event - Get information to create a new EVENT
@@ -80,6 +80,7 @@ def show_menu
   puts  "  |    5. Add attendee(s) to an existing event"
   puts  "  |    6. Update an existing event"
   puts  "  |    7. Postpone an existing event (+24h or in minutes)"
+  puts  "  |    8. Display all existing events"
   puts  "  -------------------------------------------------------"
   puts  "  |"
   puts  "  |    (Q)uit program"
@@ -102,7 +103,7 @@ def app
       when "2"
         update_password
       when "3"
-        User.all
+        User.show_all
       when "4"
         event_info = input_event
         my_event = Event.new(event_info[0], event_info[1], event_info[2], [])
@@ -113,6 +114,8 @@ def app
         # Lancer une méthode qui permet de mettre à jour les informations d'un EVENT donnée (sur quelle clé ?)
       when "7"
         # Lancer une méthode qui permet de choisir entre +24h ou une valeur en minutes, puis reporte l'événement donné (selon quelle clé) d'autant
+      when "8"
+        Event.show_all
       else
         exit = true
     end

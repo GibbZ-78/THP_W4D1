@@ -48,16 +48,22 @@ class User
     return @@all_users.length
   end
 
-  # get_all_users - Renvoie un tableau contenant tous les USERs
-  def self.get_all_users
+  # get_all - Renvoie le tableau contenant tous les USERs
+  def self.get_all
     return @@all_users
   end
 
   # all - Affiche le nombre de USERs puis les listes 1 par 1 avec leurs attributs
-  def self.all
-    puts "We have #{@@all_users.length} user(s) registered already, listed below: "
-    @@all_users.each do |user_element|
-      user_element.show
+  def self.show_all
+    puts
+    puts
+    if User.count > 0
+      puts "We have #{User.count} user(s) registered already, listed below: "
+      @@all_users.each do |user_element|
+        user_element.show
+      end
+    else
+      puts "I'm afraid we do not have any user registered yet. Be the first to entry one in the system!"
     end
   end
 

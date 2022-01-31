@@ -34,6 +34,25 @@ class Event
     return @@all_events.length
   end
 
+  # get_all - Renvoie le tableau contenant tous les EVENTs
+  def self.get_all
+    return @@all_events
+  end
+
+  # show_all - Affiche le nombre d'EVENTs puis les listes 1 par 1 avec leurs attributs
+  def self.show_all
+    puts
+    puts
+    if Event.count > 0
+      puts "We have #{Event.count} event(s) planned already, listed below: "
+      @@all_events.each do |event_element|
+        event_element.show
+      end
+    else
+      puts "As of today, we so not have any event planned for the coming period. Feel free to create a new one, though."
+    end
+  end
+
   # postpone_24h - Reporte la "start_date" de l'EVENT courant de 24 heures
   def postpone_24h
     self.start_date += 24.hours
@@ -65,7 +84,8 @@ class Event
   end
 
   # show_event - Affiche les attributs de l'EVENT courant
-  def show_event
+  def show
+    puts
     puts  "  #{self.title.upcase}"
     puts  "  > starts at : #{self.start_date}"
     puts  "  > lasts for : #{self.duration} minutes (hence will end at #{self.start_date + self.duration.minutes})"
