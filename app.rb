@@ -61,7 +61,7 @@ def input_event
   print "Enter its start date: "
   event_tmp[1] = gets.chomp
   print "Enter its duration (in minutes): "
-  event_tmp[2] = gets.chomp
+  event_tmp[2] = gets.chomp.to_i
   puts
   return event_tmp
 end

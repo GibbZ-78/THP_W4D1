@@ -14,7 +14,7 @@ class Event
   def initialize(theme, start, last_for_min, participants)
     @title = theme
     @start_date = Time.parse(start)
-    @duration = last_for_min
+    @duration = last_for_min.to_i
     @attendees = participants
     @@all_events << self
   end
@@ -85,10 +85,21 @@ class Event
 
   # show_event - Affiche les attributs de l'EVENT courant
   def show
+    status = ""
+    if self.is_past?
+      status = "Event held"
+    elsif self.is_soon?
+      status = "Starting soon!"
+    elsif self.is_future?
+      status = "Upcoming"
+    else
+      # should never happen
+    end
     puts
-    puts  "  #{self.title.upcase}"
+    puts
+    puts  "  #{self.title.upcase} [#{status}]"
     puts  "  > starts at : #{self.start_date}"
-    puts  "  > lasts for : #{self.duration} minutes (hence will end at #{self.start_date + self.duration.minutes})"
+    puts  "  > lasts for : #{self.duration} minutes (hence will end at #{self.start_date + self.duration})"
     print "  > gathers   : "
     tmp_list =""
     self.attendees.each do |people|
