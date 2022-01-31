@@ -5,19 +5,19 @@
 class User
   SEED = "Th1sIsMyS3cr3tP4553phr453"
   attr_accessor :firstname, :lastname, :email, :age, :encrypted_password
-  @@user_count = 0
   @@all_users = []
 
+  # initialize - Méthode d'instanciation d'un USER, appelée par ".new()"
   def initialize(user_fname, user_lname, user_email, user_age, user_password)
     @firstname = user_fname
     @lastname = user_lname
     @email = user_email
     @age = user_age
     @encrypted_password = User.encrypt(user_password)
-    @@user_count += 1
     @@all_users.push(self)
   end
 
+  # change_password - S'il existe, modifie le mot de passe du USER ayant pour mail "user-email" et mot de passe courant "user_old_password"
   def self.change_password(user_email, user_old_password, user_new_password)
     if User.user_exists_by_mail?(user_email)
       @@all_users.each do |item|
@@ -38,16 +38,24 @@ class User
     end
   end
 
+  # show - Affiche les propriétes d'un USER
   def show
     puts "  > Name: #{self.lastname} #{self.firstname} - Age: #{self.age} - Email: #{self.email} - Password (encrypted): #{self.encrypted_password}}"
   end
 
+  # count - Renvoie le nombre de USERs instanciés
   def self.count
-    return @@user_count
+    return @@all_users.length
   end
 
+  # get_all_users - Renvoie un tableau contenant tous les USERs
+  def self.get_all_users
+    return @@all_users
+  end
+
+  # all - Affiche le nombre de USERs puis les listes 1 par 1 avec leurs attributs
   def self.all
-    puts "We have #{@@user_count} user(s) registered already, listed below: "
+    puts "We have #{@@all_users.length} user(s) registered already, listed below: "
     @@all_users.each do |user_element|
       user_element.show
     end
@@ -55,6 +63,7 @@ class User
 
   private
 
+  # encrypt - Prend une chaîne de caractère puis la XOR avec la "graîne" (SEED) définie en constante de classe
   def self.encrypt(string_to_encrypt)
     tmp_length = (SEED.length < string_to_encrypt.length) ? SEED.length : string_to_encrypt.length
     tmp_return = ""
@@ -64,6 +73,7 @@ class User
     return tmp_return
   end
 
+  # user_exists_by_mail? - Renvoie true s'il existe un USER avec l'e-mail passé en paramètre, false sinon
   def self.user_exists_by_mail?(mail)
     exist_or_not = false
     @@all_users.each do |item|

@@ -7,48 +7,64 @@ require 'time'
 require_relative 'user'
 
 class Event
-  attr_accessor :start_date, :duration, :title
-  attr_accessor :attendees
-  @attendees = []
+  attr_accessor :start_date, :duration, :title, :attendees
+  @@all_events = []
 
-  def initialize(start, last_for_mn, theme)
-    self.start_date = Time.parse(start)
-    self.duration = last_for_mn
-    self.title = theme
+  # initialize - Méthode d'instanciation d'un EVENT, appelée par ".new()"
+  def initialize(theme, start, last_for_min, participants)
+    @title = theme
+    @start_date = Time.parse(start)
+    @duration = last_for_min
+    @attendees = participants
+    @@all_events << self
   end
 
+  # add_1_attendee - Ajoute un USER au tableau des participants à l'événement courant
   def add_1_attendee(my_user)
     self.attendees.push(my_user)
   end
 
+  # add_n_attendees - Ajoute un tableau de USERs au tableau des participants à l'événement courant
   def add_n_attendees(my_users_tab)
     self.attendees += my_users_tab
   end
 
+  # count - Renvoie le nombre d'EVENTs instanciés
+  def self.count
+    return @@all_events.length
+  end
+
+  # postpone_24h - Reporte la "start_date" de l'EVENT courant de 24 heures
   def postpone_24h
     self.start_date += 24.hours
   end
 
+  # postpone_minutes - Reporte la "start_date" de l'EVENT courant de "delay_min" minutes
   def postpone_minutes(delay_min)
     self.start_date += delay_min.minutes
   end
 
+  # end_date - Calcule et renvoie la date/heure de fin d'un EVENT sur base de sa "start_date" et de sa "duration"
   def end_date
     self.start_date + self.duration.minutes
   end
 
+  # is_past? - Renvoie "true" si l'EVENT courant est passé (i.e. sa "start_date" est antérieure à la date et l'heure courante)
   def is_past?
     self.start_date <= Time.now
   end
 
+  # is_future? - Renvoie "true" si l'EVENT courant est à venir (i.e. is_past? est "false")
   def is_future?
     !self.is_past?
   end
 
+  # is_soon? - Renvoie "true" si la "start_date" de l'EVENT courant est située entre le moment présent et 30' plus tard
   def is_soon?
     Times.now >= self.start_date && self.start_date <= Times.now + 30.minutes
   end
 
+  # show_event - Affiche les attributs de l'EVENT courant
   def show_event
     puts  "  #{self.title.upcase}"
     puts  "  > starts at : #{self.start_date}"
@@ -61,7 +77,7 @@ class Event
     if !tmp_list.empty? 
       tmp_list = tmp_list[0..-2]+"."
     else
-      tmp_list = "no attendee yet!"
+      tmp_list = "No attendee yet!"
     end
     puts tmp_list
   end

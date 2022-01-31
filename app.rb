@@ -18,13 +18,13 @@ def update_password
   print "Enter new password: "
   usr_future_password = gets.chomp
   puts
-  test_change_pass = User.change_password(usr_email, usr_past_password, usr_future_password)
+  User.change_password(usr_email, usr_past_password, usr_future_password)
 end
 
-
-# input_user - Create a new user by prompting for information
+# input_user - Prompt the user for useful information to then create a new USER
 def input_user
   usr_tmp = []
+  puts
   print "Enter first name: "
   usr_tmp[0] = gets.chomp
   print "Enter last name: "
@@ -35,17 +35,57 @@ def input_user
   usr_tmp[3] = gets.chomp.to_i
   print "Enter password: "
   usr_tmp[4] = gets.chomp
+  puts
   return usr_tmp
 end
 
-# add_attendee - 
-def add_attendee
-
+# add_attendee - Cycle through the USER list and propose to add each of them to the current EVENT
+def add_attendees(current_event)
+  compteur = 0
+  User.get_all_users.each do |subscriber|
+    print "Do you want to invite #{subscriber.firstname} #{subscriber.lastname} (#{subscriber.email}) to this new event (Y/N)? "
+    if gets.chomp.upcase == "Y"
+      current_event.add_1_attendee(subscriber)
+      compteur += 1
+    end
+    puts "Thank you: #{compteur} user(s) have been invited to the upcoming #{current_event.title} event"
+  end
 end
 
-# create_event - 
-def create_event
+# input_event - Get information to create a new EVENT
+def input_event
+  event_tmp = []
+  puts
+  print "Enter the title of your new event: "
+  event_tmp[0] = gets.chomp
+  print "Enter its start date: "
+  event_tmp[1] = gets.chomp
+  print "Enter its duration (in minutes): "
+  event_tmp[2] = gets.chomp
+  puts
+  return event_tmp
+end
 
+# show_menu - Display the main menu to manager USERs and EVENTs
+def show_menu
+  puts
+  puts
+  puts  "  -------------------------------------------------------"
+  puts  "  |  WHAT DO YOU WANT TO DO, TODAY?"
+  puts  "  -------------------------------------------------------"
+  puts  "  |    1. Create a new user"
+  puts  "  |    2. Change the password of an existing user"
+  puts  "  |    3. Display all existing users"
+  puts  "  |    4. Create a new event"
+  puts  "  |    5. Add attendee(s) to an existing event"
+  puts  "  |    6. Update an existing event"
+  puts  "  |    7. Postpone an existing event (+24h or in minutes)"
+  puts  "  -------------------------------------------------------"
+  puts  "  |"
+  puts  "  |    (Q)uit program"
+  puts  "  |"
+  puts  "  -------------------------------------------------------"
+  print "  > "
 end
 
 # app - Main method
@@ -53,18 +93,7 @@ def app
   system("clear")
   exit = false
   while !exit do
-    puts
-    puts
-    puts "What do you want to do, today ?"
-    puts "  1. Input a new user"
-    puts "  2. Change the password of a given user"
-    puts "  3. Display all users"
-    puts "  4. Create a new event"
-    puts "  5. Add attendee(e) to an existing event"
-    puts "  6. Update an existing event"
-    puts "  7. Postpone an event (+24h or in minutes)"
-    puts
-    print " > "
+    show_menu
     choice = gets.chomp
     case choice
       when "1"
@@ -75,9 +104,15 @@ def app
       when "3"
         User.all
       when "4"
-        create_event
+        event_info = input_event
+        my_event = Event.new(event_info[0], event_info[1], event_info[2], [])
+        add_attendees(my_event)
       when "5"
-        add_attendee
+        # Lancer une méthode qui récupère un évènement donné (sur quelle clé ?) et boucle pour lui ajouter des participants
+      when "6"
+        # Lancer une méthode qui permet de mettre à jour les informations d'un EVENT donnée (sur quelle clé ?)
+      when "7"
+        # Lancer une méthode qui permet de choisir entre +24h ou une valeur en minutes, puis reporte l'événement donné (selon quelle clé) d'autant
       else
         exit = true
     end
